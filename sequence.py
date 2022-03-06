@@ -1,10 +1,21 @@
+'''
+The sequence module takes a pecified sequence
+and provides an iterable implementatin to loop through
+the specified sequence
+'''
 class Seq:
 
-    def __init__(self, start_sequence, end_sequence=None, 
+
+    '''
+    The Seq class is designed count in a specified sequence
+    The class implements the __iter__ and __next__ methods
+    to be an iteratable class
+    '''
+    def __init__(self, start_sequence, end_sequence=None,
             sequence_type="alpha_numerical_both_case", sequence_list=None):
         '''
         An iterable class to generate a specified sequence.
-        
+
         Args:
             start_sequence (str): the start of the sequence
             end_sequence (str): the end of the sequence
@@ -14,7 +25,7 @@ class Seq:
             The instantiated instance of Seq
         Raises:
             ValueError: if sequence_type not in self.sequence_map.keys()
-            
+
         Seq(str, str, str, [str,]) -> Seq()
         '''
         self.sequence_type = sequence_type
@@ -35,20 +46,20 @@ class Seq:
             "hex": self.sublist('0','9','A','F'),
             "custom": sequence_list
         }
-        
+
         if sequence_type not in self.sequence_map.keys():
             raise ValueError("ValueError thrown. Argument \"sequence_type\" \
                 must be in this list:\n{}".format(self.sequence_map.keys()))
         if sequence_type == "custom" \
-                and (sequence_list == None \
-                    or type(sequence_list) != type([]) 
-                    or (type(sequence_list) == type([]) 
+                and (sequence_list is None \
+                    or not isinstance(sequence_list, list)
+                    or (isinstance(sequence_list, list)
                         and len(sequence_list) < 2
                     )
                 ):
             raise ValueError("ValueError thrown. Argument \"sequence_list\" must \
                 contain a list of at least 2 strings when sequence_type == \"custom\"")
-        
+
         self.sequence_list = self.sequence_map[self.sequence_type]
         self.start_sequence = start_sequence
         self.current_sequence = start_sequence
@@ -56,13 +67,12 @@ class Seq:
 
     def __iter__(self):
         return self
-        
+
     def __next__(self):
         if self.current_sequence == self.end_sequence:
             raise StopIteration
-        else:
-            self.current_sequence = self.next_sequence()
-            return self.current_sequence
+        self.current_sequence = self.next_sequence()
+        return self.current_sequence
 
     def next_sequence(self):
         ''''
@@ -72,9 +82,9 @@ class Seq:
         '''
         index_pos = [self.sequence_list.index(str(char)) for char in self.current_sequence]
 
-        for i, v in reversed(list(enumerate(index_pos))):
-            index_pos[i] = self.next_char_in_sequence(v)
-            if index_pos[i] != 0:
+        for index, value in reversed(list(enumerate(index_pos))):
+            index_pos[index] = self.next_char_in_sequence(value)
+            if index_pos[index] != 0:
                 return ''.join([self.sequence_list[c] for c in index_pos])
         return self.current_sequence
 
@@ -85,14 +95,15 @@ class Seq:
         '''
         if int(index) == len(self.sequence_list) - 1:
             return 0
-        else:
-            return int(index) + 1
-    
-    def sublist(self, *args):
-        if len(args) == 2:
-            return self.__alpha_num[self.__alpha_num.index(args[0]): 
-                self.__alpha_num.index(args[1]) + 1]
-        else:
-            return self.__alpha_num[self.__alpha_num.index(args[0]): 
-                self.__alpha_num.index(args[1]) + 1] + self.sublist(args[2:])
+        return int(index) + 1
 
+    def sublist(self, *args):
+        '''
+        Helper function to generate different sublists from
+        self.__alpha_num
+        '''
+        if len(args) == 2:
+            return self.__alpha_num[self.__alpha_num.index(args[0]):
+                self.__alpha_num.index(args[1]) + 1]
+        return self.__alpha_num[self.__alpha_num.index(args[0]):
+            self.__alpha_num.index(args[1]) + 1] + self.sublist(args[2:])
