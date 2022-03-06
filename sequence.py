@@ -106,4 +106,4 @@ class Seq:
             return self.__alpha_num[self.__alpha_num.index(args[0]):
                 self.__alpha_num.index(args[1]) + 1]
         return self.__alpha_num[self.__alpha_num.index(args[0]):
-            self.__alpha_num.index(args[1]) + 1] + self.sublist(args[2:])
+            self.__alpha_num.index(args[1]) + 1] + self.sublist(*args[2:])
