@@ -36,7 +36,7 @@ class Seq:
         Returns:
             The instantiated instance of Seq
         Raises:
-            ValueError: if sequence_type not in self.sequence_map.keys()
+            ValueError: if sequence_type not in SEQ_TYPES
 
         Seq(str, str, str, [str,]) -> Seq()
         '''
@@ -64,23 +64,14 @@ class Seq:
             "custom": sequence_list
         }
 
-        if sequence_type not in self.sequence_map.keys():
+        if sequence_type not in SEQ_TYPES:
             raise ValueError("ValueError thrown. Argument \"sequence_type\" \
                 must be in this list:\n{}".format(SEQ_TYPES))
-        if sequence_type == "custom" \
-                and (sequence_list is None \
-                    or not isinstance(sequence_list, list)
-                    or not isinstance(sequence_list, str)
-                    or (
-                        (isinstance(sequence_list, list)
-                            or isinstance(sequence_list, str)
-                        )
-                        and len(sequence_list) < 2
-                    )
-                ):
-            raise ValueError("ValueError thrown. Argument \"sequence_list\" must \
-                contain a list of at least 2 strings elements or a string of at least 2 characters \
-                when sequence_type == \"custom\"")
+        if sequence_type == "custom":
+            if not isinstance(sequence_list, (list, str)) or len(sequence_list) < 2:
+                raise ValueError("ValueError thrown. Argument \"sequence_list\" must \
+                    contain a list of at least 2 strings elements or a string of at \
+                    least 2 characters when sequence_type == \"custom\"")
 
         self.sequence_list = self.sequence_map[self.sequence_type]
         self.start_sequence = start_sequence
