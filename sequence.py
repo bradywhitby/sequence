@@ -78,7 +78,12 @@ class Seq:
         self.current_sequence = start_sequence
         self.end_sequence = end_sequence
 
-        self.length = ""
+        if end_sequence is None:
+            self.length = ""
+        else:
+            self.length = self.get_length()
+        if self.length < 0:
+            raise ValueError("start_sequence can not be greater than end_sequence")
 
     def __iter__(self):
         return self
@@ -124,7 +129,9 @@ class Seq:
             self.__alpha_num.index(args[1]) + 1] + self.sublist(*args[2:])
 
     def __len__(self):
-        return self.get_length()
+        if self.end_sequence is None:
+            return ValueError("No end_sequence specified. Sequence length is infinite")
+        return self.length()
 
     def get_length(self):
         '''
@@ -132,6 +139,7 @@ class Seq:
         '''
         #101 = (1 × 2^0) + (0 × 2^1) + (1 × 2^2) = 5.
         #(value x base array length ^ index pos)
+        #(value * base array length ** index pos)
         if self.end_sequence is None:
             return ValueError
 
@@ -166,7 +174,7 @@ if __name__ == "__main__":
     for seq_types_index, seq_types_value in enumerate(SEQ_TYPES):
         print("{}: {}".format(seq_types_index, seq_types_value))
     seq_type = input("\nPlease enter a sequence type from the above selection\n\
-   # you can enter the string or the corrisponding number: ")
+    you can enter the string or the corrisponding number: ")
     if seq_type.strip().isdigit():
         seq_type = SEQ_TYPES[int(seq_type)]
     seq_list = []
@@ -174,6 +182,6 @@ if __name__ == "__main__":
         seq_list = input("Please enter a sequence string or list: ")
     seq = Seq(start_seq, end_seq, seq_type, seq_list)
     print(seq.current_sequence)
-    for each in seq:
-        print(each)
-    seq.get_length()
+    # for each in seq:
+    #     print(each)
+    print(seq.get_length())
